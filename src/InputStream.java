@@ -34,7 +34,9 @@ public class InputStream {
     }
 
     public String readln2() {
-        return "";
+    	BufferedReader br=new BufferedReader(this.file);
+	      String line;
+	      return br.readLine();
     }
 
     public String readln3() {

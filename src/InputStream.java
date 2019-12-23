@@ -28,7 +28,7 @@ public class InputStream {
         this.file.seek(previousPos);
         return false;
     }
-
+//true
     public String readln1() {
         return "";
     }

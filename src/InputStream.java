@@ -44,7 +44,10 @@ public class InputStream {
     }
 
     public String readln4() {
-        return "";
+        MappedByteBuffer mbuf = file.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, file.length());
+    	while (mbuf.hasRemaining()) {
+    	     return ((char)mbuf.get());
+        }
     }
 }
 

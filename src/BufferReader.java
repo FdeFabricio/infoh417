@@ -1,14 +1,15 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class InputStream implements InputStreamInterface {
+public class BufferReader implements InputStreamInterface {
 	private String filePath;
 	private FileReader fr;
+	private BufferedReader br;
 
-
-	public InputStream(String filePath) {
+	public BufferReader(String filePath) {
 		super();
 		this.filePath = filePath;
 	}
@@ -16,41 +17,35 @@ public class InputStream implements InputStreamInterface {
 	@Override
 	public void open() throws FileNotFoundException {
 		fr = new FileReader(new File(filePath));
+		br = new BufferedReader(fr);
 	}
 
 	@Override
 	public String readln() throws IOException {
-		StringBuilder response = new StringBuilder();
-		char r;
-
-		do {
-			r = (char) fr.read();
-			if (r != '\n')
-				response.append(r);
-		} while (r != '\n');
-		return response.toString();
+		return br.readLine();
 	}
 
 	public void seek(long pos) throws IOException {
-		fr.skip(pos);
+		br.skip(pos);
 	}
 
 	@Override
 	public boolean end_of_stream() throws IOException {
-		//To DO
-		fr.mark(1);
-	    int i = fr.read();
-	    fr.reset();
+		br.mark(1);
+	    int i = br.read();
+	    br.reset();
 	    return i < 0;
 	}
 
 	@Override
 	public void close() throws IOException {
 		fr.close();
+		br.close();
 	}
 
 	@Override
 	public void setBuffer(int bufSize) {
+		
 	}
 
 }

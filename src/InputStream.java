@@ -1,53 +1,56 @@
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 
-public class InputStream {
-    private RandomAccessFile file;
-    private String filePath;
+public class InputStream implements InputStreamInterface {
+	private String filePath;
+	private FileReader fr;
 
-    public InputStream(String path) {
-        this.filePath = path;
-    }
 
-    public void open() throws FileNotFoundException {
-        this.file = new RandomAccessFile(this.filePath, "r");
-    }
+	public InputStream(String filePath) {
+		super();
+		this.filePath = filePath;
+	}
 
-    public void seek(long pos) throws IOException {
-        this.file.seek(pos);
-    }
+	@Override
+	public void open() throws FileNotFoundException {
+		fr = new FileReader(new File(filePath));
+	}
 
-    public boolean end_of_stream() throws IOException {
-       long previousPos =  this.file.getFilePointer();
-       try {
-            this.file.read();
-        } catch (IOException e) {
-            return true;
-        }
-        this.file.seek(previousPos);
-        return false;
-    }
+	@Override
+	public String readln() throws IOException {
+		StringBuilder response = new StringBuilder();
+		char r;
 
-    public String readln1() {
-        return "";
-    }
+		do {
+			r = (char) fr.read();
+			if (r != '\n')
+				response.append(r);
+		} while (r != '\n');
+		return response.toString();
+	}
 
-    public String readln2() {
-    	BufferedReader br=new BufferedReader(this.file);
-	      String line;
-	      return br.readLine();
-    }
+	public void seek(long pos) throws IOException {
+		fr.skip(pos);
+	}
 
-    public String readln3() {
-        return "";
-    }
+	@Override
+	public boolean end_of_stream() throws IOException {
+		//To DO
+		fr.mark(1);
+	    int i = fr.read();
+	    fr.reset();
+	    return i < 0;
+	}
 
-    public String readln4() {
-        MappedByteBuffer mbuf = file.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, file.length());
-    	while (mbuf.hasRemaining()) {
-    	     return ((char)mbuf.get());
-        }
-    }
+	@Override
+	public void close() throws IOException {
+		fr.close();
+	}
+
+	@Override
+	public void setBuffer(int bufSize) {
+	}
+
 }
-

@@ -1,0 +1,4 @@
+.idea
+/test/test_*.txt
+.out
+/input/imdb.tgz

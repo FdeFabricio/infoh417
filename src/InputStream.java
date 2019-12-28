@@ -34,7 +34,9 @@ public class InputStream {
     }
 
     public String readln2() {
-        return "";
+    	BufferedReader br=new BufferedReader(this.file);
+	      String line;
+	      return br.readLine();
     }
 
     public String readln3() {
@@ -42,7 +44,10 @@ public class InputStream {
     }
 
     public String readln4() {
-        return "";
+        MappedByteBuffer mbuf = file.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, file.length());
+    	while (mbuf.hasRemaining()) {
+    	     return ((char)mbuf.get());
+        }
     }
 }
 

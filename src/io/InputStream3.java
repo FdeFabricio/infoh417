@@ -1,8 +1,12 @@
 package io;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public class InputStream3 implements InputStream {
+    private RandomAccessFile raf;
     private FileReader fr;
     private BufferedReader br;
     private int bufferSize;
@@ -11,8 +15,9 @@ public class InputStream3 implements InputStream {
         this.bufferSize = bufferSizeBytes * 8;
     }
 
-    public void open(String filePath) throws FileNotFoundException {
-        fr = new FileReader(new File(filePath));
+    public void open(String filePath) throws IOException {
+        this.raf = new RandomAccessFile(filePath, "r");
+        this.fr = new FileReader(raf.getFD());
         br = new BufferedReader(fr, bufferSize);
     }
 
@@ -29,7 +34,8 @@ public class InputStream3 implements InputStream {
     }
 
     public void seek(long pos) throws IOException {
-        br.skip(pos); // TODO use seek
+        raf.seek(pos);
+        this.br = new BufferedReader(fr);
     }
 
     public boolean end_of_stream() throws IOException {

@@ -1,29 +1,42 @@
 package io;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 
-// TODO
 public class InputStream4 implements InputStream {
-    private FileReader fr;
+    private MappedByteBuffer buffer;
+    private RandomAccessFile file;
+    private int bufferSize;
 
-    public InputStream4(int bufferSizeByte) {
+    public InputStream4(int bufferSize) {
+        this.bufferSize = bufferSize;
     }
 
-    public void open(String filePath) throws FileNotFoundException {
-
+    public void open(String filePath) throws IOException {
+        this.file = new RandomAccessFile(filePath, "r");
+        this.buffer = file.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, Math.min(this.bufferSize, file.length()));
     }
 
-    public String readln() throws IOException {
-        return null;
+    public String readln() {
+        StringBuilder line = new StringBuilder();
+        char c;
+        while (true) {
+            c = (char) this.buffer.get();
+            if (c == NEW_LINE) {
+                break;
+            }
+            line.append(c);
+        }
+        return line.toString();
     }
 
     public void seek(long pos) throws IOException {
-
+        this.buffer = this.file.getChannel().map(FileChannel.MapMode.READ_ONLY, pos, Math.min(this.bufferSize, this.file.length() - pos));
     }
 
     public boolean end_of_stream() throws IOException {
-        return false;
+        return this.buffer.position() >= this.file.length();
     }
 }

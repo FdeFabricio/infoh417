@@ -5,17 +5,17 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class InputStream1 implements InputStream {
-    private RandomAccessFile fr;
+    private RandomAccessFile file;
 
-    public void open(String f) throws FileNotFoundException {
-        this.fr = new RandomAccessFile(f, "r");
+    public void open(String filePath) throws FileNotFoundException {
+        this.file = new RandomAccessFile(filePath, "r");
     }
 
     public String readln() throws IOException {
         StringBuilder line = new StringBuilder();
-        char c = ' ';
+        char c;
         while (true) {
-            c = (char) fr.read();
+            c = (char) this.file.read();
             if (c == NEW_LINE) {
                 break;
             }
@@ -25,15 +25,15 @@ public class InputStream1 implements InputStream {
     }
 
     public void seek(long pos) throws IOException {
-        this.fr.seek(pos);
+        this.file.seek(pos);
     }
 
     public boolean end_of_stream() throws IOException {
-        long previousPos = this.fr.getFilePointer();
-        if (this.fr.read() == -1) {
+        long previousPos = this.file.getFilePointer();
+        if (this.file.read() == -1) {
             return true;
         } else {
-            this.fr.seek(previousPos);
+            this.file.seek(previousPos);
             return false;
         }
     }

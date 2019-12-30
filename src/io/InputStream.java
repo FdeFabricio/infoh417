@@ -1,13 +1,12 @@
 package io;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public interface InputStream {
 
     char NEW_LINE = '\n';
 
-    void open(String filePath) throws FileNotFoundException;
+    void open(String filePath) throws IOException;
 
     String readln() throws IOException;
 

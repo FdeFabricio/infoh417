@@ -12,7 +12,7 @@ public class InputStream3 implements InputStream {
     private int bufferSize;
 
     public InputStream3(int bufferSizeBytes) {
-        this.bufferSize = bufferSizeBytes * 8;
+        this.bufferSize = bufferSizeBytes;
     }
 
     public void open(String filePath) throws IOException {

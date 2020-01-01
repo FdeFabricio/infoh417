@@ -20,27 +20,37 @@ public class OutputStream4 implements OutputStream {
         this.file = new RandomAccessFile(filePath, "rw");
         this.file.setLength(0);
         this.fileChannel = this.file.getChannel();
-        this.buffer = this.fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, this.bufferSize);
+        this.map();
     }
 
-    public void writeln(String line) throws IOException {
-        // TODO fix https://stackoverflow.com/questions/59537674/how-to-prevent-mappedbytebuffer-put-from-writing-null-characters-at-the-end-of-f
+    public void writeln(String line) {
         for (char c : line.toCharArray()) {
-            if (!this.buffer.hasRemaining()) this.remapBuffer();
-            this.buffer.put((byte) c);
+            putChar(c);
         }
-        if (!this.buffer.hasRemaining()) this.remapBuffer();
-        this.buffer.put((byte) NEW_LINE);
+        putChar(NEW_LINE);
     }
 
     public void close() throws IOException {
+        this.buffer.force();
+        this.fileChannel.truncate(this.bufferCount * this.bufferSize - this.buffer.remaining());
+        this.fileChannel.close();
         this.buffer.clear();
         this.file.close();
-        this.fileChannel.close();
     }
 
-    private void remapBuffer() throws IOException {
-        bufferCount += 1;
+    private void map() throws IOException {
         this.buffer = this.fileChannel.map(FileChannel.MapMode.READ_WRITE, this.bufferCount * this.bufferSize, this.bufferSize);
+        this.bufferCount += 1;
+    }
+
+    private void putChar(char c) {
+        if (!this.buffer.hasRemaining()) {
+            try {
+                this.map();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        this.buffer.put((byte) c);
     }
 }

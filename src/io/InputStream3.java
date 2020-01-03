@@ -7,7 +7,6 @@ import java.io.RandomAccessFile;
 
 public class InputStream3 implements InputStream {
     private RandomAccessFile raf;
-    private FileReader fr;
     private BufferedReader br;
     private int bufferSize;
 
@@ -17,31 +16,29 @@ public class InputStream3 implements InputStream {
 
     public void open(String filePath) throws IOException {
         this.raf = new RandomAccessFile(filePath, "r");
-        this.fr = new FileReader(raf.getFD());
-        br = new BufferedReader(fr, bufferSize);
+        this.br = new BufferedReader(new FileReader(this.raf.getFD()), this.bufferSize);
     }
 
     public String readln() throws IOException {
         StringBuilder response = new StringBuilder();
         char r;
-
         do {
-            r = (char) br.read();
-            if (r != '\n')
+            r = (char) this.br.read();
+            if (r != NEW_LINE)
                 response.append(r);
-        } while (r != '\n');
+        } while (r != NEW_LINE);
         return response.toString();
     }
 
     public void seek(long pos) throws IOException {
-        raf.seek(pos);
-        this.br = new BufferedReader(fr);
+        this.raf.seek(pos);
+        this.br = new BufferedReader(new FileReader(this.raf.getFD()));
     }
 
     public boolean end_of_stream() throws IOException {
-        br.mark(1);
-        int i = br.read();
-        br.reset();
-        return i < 0;
+        this.br.mark(1);
+        int i = this.br.read();
+        this.br.reset();
+        return i == -1;
     }
 }

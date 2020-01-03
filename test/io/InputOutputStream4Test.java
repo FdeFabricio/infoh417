@@ -7,7 +7,7 @@ import java.io.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InputOutputStream4Test {
-    String filePath = "test/test_file2.txt";
+    String filePath = "test/test_file4.txt";
 
     @Test
     void testInputSmall() throws IOException {

@@ -1,5 +1,7 @@
 .idea
 /test/test_*.txt
 .out
+input/imdb/
 /input/imdb.tgz
+/input/*.csv
 /bin/

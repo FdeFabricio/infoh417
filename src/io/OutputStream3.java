@@ -8,8 +8,8 @@ public class OutputStream3 implements OutputStream {
     private BufferedWriter bw;
     private int bufferSize;
 
-    public OutputStream3(int bufferSizeBytes) {
-        this.bufferSize = bufferSizeBytes * 8; // TODO why needs to be multiplied?
+    public OutputStream3(int bufferSize) {
+        this.bufferSize = bufferSize;
     }
 
     public void create(String filePath) throws IOException {

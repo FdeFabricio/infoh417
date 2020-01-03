@@ -15,19 +15,25 @@ public class SequentialReading {
         return sum;
     }
 
-    public int length1(String f) throws IOException {
-        return this.length(new InputStream1(), f);
+    public int run(int streamType, String filePath) throws IOException {
+        switch (streamType) {
+            case 1:
+                return this.length(new InputStream1(), filePath);
+            case 2:
+                return this.length(new InputStream2(), filePath);
+            default:
+                throw new IllegalArgumentException("wrong argument");
+        }
     }
 
-    public int length2(String f) throws IOException {
-        return this.length(new InputStream2(), f);
-    }
-
-    public int length3(String f, int b) throws IOException {
-        return this.length(new InputStream3(b), f);
-    }
-
-    public int length4(String f, int b) throws IOException {
-        return this.length(new InputStream4(b), f);
+    public int run(int streamType, String filePath, int bufferSize) throws IOException {
+        switch (streamType) {
+            case 3:
+                return this.length(new InputStream3(bufferSize), filePath);
+            case 4:
+                return this.length(new InputStream4(bufferSize), filePath);
+            default:
+                throw new IllegalArgumentException("wrong argument");
+        }
     }
 }

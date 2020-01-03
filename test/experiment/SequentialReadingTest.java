@@ -18,25 +18,25 @@ class SequentialReadingTest {
 
     @Test
     void testLength1() throws IOException {
-        assertEquals(sequentialReading.length1(inputFile), 10);
+        assertEquals(sequentialReading.run(1, inputFile), 10);
     }
 
     @Test
     void testLength2() throws IOException {
-        assertEquals(sequentialReading.length2(inputFile), 10);
+        assertEquals(sequentialReading.run(2, inputFile), 10);
     }
 
     @Test
     void testLength3() throws IOException {
-        assertEquals(sequentialReading.length3(inputFile, 1), 10);
-        assertEquals(sequentialReading.length3(inputFile, 3), 10);
-        assertEquals(sequentialReading.length3(inputFile, 8000), 10);
+        assertEquals(sequentialReading.run(3, inputFile, 1), 10);
+        assertEquals(sequentialReading.run(3, inputFile, 3), 10);
+        assertEquals(sequentialReading.run(3, inputFile, 8000), 10);
     }
 
     @Test
     void testLength4() throws IOException {
-        assertEquals(sequentialReading.length4(inputFile, 1), 10);
-        assertEquals(sequentialReading.length4(inputFile, 3), 10);
-        assertEquals(sequentialReading.length4(inputFile, 8000), 10);
+        assertEquals(sequentialReading.run(4,inputFile, 1), 10);
+        assertEquals(sequentialReading.run(4,inputFile, 3), 10);
+        assertEquals(sequentialReading.run(4,inputFile, 8000), 10);
     }
 }

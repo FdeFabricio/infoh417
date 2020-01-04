@@ -1,53 +1,172 @@
 package experiment;
+
 import io.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 public class CombinedReadWrite {
-	private List<InputStream> lins = new ArrayList<InputStream>();
-	private OutputStream ons;
-	private List<String> readFiles = new ArrayList<>();
-	private String outputFile;
-	
-	public CombinedReadWrite(InputStream ins, OutputStream ons, List<String> f , int b, String outputPath) throws IOException {
-		super();
-		this.readFiles = f;
-		for (int i = 0; i < readFiles.size(); i++) {
-			String file = readFiles.get(i);
-			if (ins instanceof InputStream1) {
-				this.lins.add(new InputStream1());
-			}
-			else if (ins instanceof InputStream2) {
-				this.lins.add(new InputStream2());
-			}
-			else if (ins instanceof InputStream3) {
-				this.lins.add(new InputStream3(b));
-			}
-			else this.lins.add(new InputStream4(b));
-			
-			this.lins.get(i).open(file);
+    private List<InputStream> inputs = new ArrayList<>();
+    private OutputStream output;
+
+    private void rrmerge() throws IOException {
+        while (this.inputs.size() > 0) {
+            List<InputStream> toRemove = new ArrayList<>();
+        	for (int i = 0; i < this.inputs.size(); i++) {
+                InputStream input = this.inputs.get(i);
+            	if (!input.end_of_stream()) {
+                    this.output.writeln(input.readln());
+                } else {
+                    toRemove.add(input);
+                }
+            }
+        	this.inputs.removeAll(toRemove);
+        }
+        this.output.close();
+    }
+
+    // none is buffered
+    public void run(List<String> files, String outputFile, int inputStream, int outputStream) throws IOException {
+        switch (inputStream) {
+            case 1:
+                for (String filePath : files) {
+                    InputStream1 input = new InputStream1();
+                    input.open(filePath);
+                    this.inputs.add(input);
+                }
+                break;
+            case 2:
+                for (String filePath : files) {
+                    InputStream2 input = new InputStream2();
+                    input.open(filePath);
+                    this.inputs.add(input);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("wrong argument");
+        }
+
+        switch (outputStream) {
+            case 1:
+                this.output = new OutputStream1();
+                break;
+            case 2:
+                this.output = new OutputStream2();
+                break;
+            default:
+                throw new IllegalArgumentException("wrong argument");
+        }
+
+        output.create(outputFile);
+        this.rrmerge();
+    }
+
+	// only input is buffered
+	public void run(List<String> files, int inputStream, int outputStream, String outputFile, int inputB) throws IOException {
+		switch (inputStream) {
+			case 3:
+				for (String filePath : files) {
+					InputStream3 input = new InputStream3(inputB);
+					input.open(filePath);
+					this.inputs.add(input);
+				}
+				break;
+			case 4:
+				for (String filePath : files) {
+					InputStream4 input = new InputStream4(inputB);
+					input.open(filePath);
+					this.inputs.add(input);
+				}
+				break;
+			default:
+				throw new IllegalArgumentException("wrong argument");
 		}
-		this.ons = ons;
-		this.outputFile = outputPath;
-	}
-	
-	public void rrmerge() throws IOException {
-		ons.create(this.outputFile);
-		String line;
-		
-		while(this.lins.size()!=0)
-		{
-		for (int i = 0; i < this.lins.size(); i++) {
-			 if(!this.lins.get(i).end_of_stream()) {
-				 line = this.lins.get(i).readln();
-					ons.writeln(line); 
-			 }
-			 else {
-				 this.lins.remove(i);}
-			 
+
+		switch (outputStream) {
+			case 1:
+				this.output = new OutputStream1();
+				break;
+			case 2:
+				this.output = new OutputStream2();
+				break;
+			default:
+				throw new IllegalArgumentException("wrong argument");
 		}
+
+		output.create(outputFile);
+		this.rrmerge();
+	}
+
+	// only output is buffered
+    public void run(List<String> files, String outputFile, int inputStream, int outputStream, int outputB) throws IOException {
+		switch (inputStream) {
+			case 1:
+				for (String filePath : files) {
+					InputStream1 input = new InputStream1();
+					input.open(filePath);
+					this.inputs.add(input);
+				}
+				break;
+			case 2:
+				for (String filePath : files) {
+					InputStream2 input = new InputStream2();
+					input.open(filePath);
+					this.inputs.add(input);
+				}
+				break;
+			default:
+				throw new IllegalArgumentException("wrong argument");
 		}
-		ons.close();
-	}
-	}
+
+		switch (outputStream) {
+			case 3:
+				this.output = new OutputStream3(outputB);
+				break;
+			case 4:
+				this.output = new OutputStream4(outputB);
+				break;
+			default:
+				throw new IllegalArgumentException("wrong argument");
+		}
+
+		output.create(outputFile);
+		this.rrmerge();
+    }
+
+	// both buffered
+	public void run(List<String> files, String outputFile, int inputStream, int outputStream, int inputB, int outputB) throws IOException {
+        switch (inputStream) {
+            case 3:
+                for (String filePath : files) {
+                    InputStream3 input = new InputStream3(inputB);
+                    input.open(filePath);
+                    this.inputs.add(input);
+                }
+                break;
+            case 4:
+                for (String filePath : files) {
+                    InputStream4 input = new InputStream4(inputB);
+                    input.open(filePath);
+                    this.inputs.add(input);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("wrong argument");
+        }
+
+        switch (outputStream) {
+            case 3:
+                this.output = new OutputStream3(outputB);
+                break;
+            case 4:
+                this.output = new OutputStream4(outputB);
+                break;
+            default:
+                throw new IllegalArgumentException("wrong argument");
+        }
+
+        output.create(outputFile);
+        this.rrmerge();
+    }
+}

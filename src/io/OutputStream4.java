@@ -20,6 +20,7 @@ public class OutputStream4 implements OutputStream {
         this.file = new RandomAccessFile(filePath, "rw");
         this.file.setLength(0);
         this.fileChannel = this.file.getChannel();
+        this.bufferCount = 0;
         this.map();
     }
 

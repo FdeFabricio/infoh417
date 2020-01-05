@@ -2,6 +2,7 @@ package experiment;
 
 import io.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -81,6 +82,7 @@ public class MultiWayMerge {
             OutputStream output = new OutputStream4(1000);
             String outputFileName = OUTPUT_FOLDER + "m" + subfilesCount + ".txt";
             output.create(outputFileName);
+            List<String> files2bDeleted = new ArrayList<>();
 
             // read the d subfiles
             for (int i = 0; i < d; i++) {
@@ -88,7 +90,9 @@ public class MultiWayMerge {
                     break;
                 }
                 InputStream inputStream = new InputStream2();
-                inputStream.open(this.subfilesQueue.poll());
+                String filePath = this.subfilesQueue.poll();
+                files2bDeleted.add(filePath);
+                inputStream.open(filePath);
                 inputStreams.add(inputStream);
             }
 
@@ -111,8 +115,18 @@ public class MultiWayMerge {
             subfilesQueue.add(outputFileName);
             subfilesCount++;
             output.close();
+
+            for (String filePath: files2bDeleted) {
+                deleteFile(filePath);
+            }
         }
 
+        deleteFile(outputFilePath);
         Files.move(Paths.get(this.subfilesQueue.poll()), Paths.get(outputFilePath));
+    }
+
+    private void deleteFile(String filePath) {
+        File f = new File(filePath);
+        f.delete();
     }
 }

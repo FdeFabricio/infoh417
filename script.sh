@@ -81,64 +81,123 @@ for filename in `ls -Sr input/*.csv`; do
 done
 
 # Experiment 3
-javac -sourcepath src src/Experiment3.java -d bin
-output="output/output3.txt"
-f_exp3="output/experiment3.txt"
-echo input_stream,output_stream,filename,k,time >> $f_exp3
+experiment3() {
+    javac -sourcepath src src/Experiment3.java -d bin
+    output="output/output3.txt"
+    f_exp3="output/experiment3.txt"
+    echo input_stream,output_stream,filename,k,time >> $f_exp3
 
-# input_stream = 2
-for out_stream in {1,2,3,4}; do
-    echo out_tream $out_stream
-    if [ "$stream_type" -lt 3 ] # not buffered
-    then
-        for file in {input/name.csv,input/company_name.csv}; do # large and small files
-            echo    file $file
-            for ((i=0; i<2; i++)); do # iterations
-                # k=2 files
-                purge
-                time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 0 $file $file 1>/dev/null) 2>&1`
-                echo 2,$out_stream,$file,2,$time_result >> f_exp3
-                echo      k 2
-
-                # k=5 files
-                purge
-                time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 0 $file $file $file $file $file 1>/dev/null) 2>&1`
-                echo 2,$out_stream,$file,5,$time_result >> f_exp3
-                echo      k 5
-
-                # k=10 files
-                purge
-                time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 0 $file $file $file $file $file $file $file $file $file $file 1>/dev/null) 2>&1`
-                echo 2,$out_stream,$file,10,$time_result >> f_exp3
-                echo      k 10
-            done
-        done
-    else
-        for b in {10,10000,100000}; do
-            echo    b $b
-            for file in {input/name.csv,input/company_name.csv}; do # large and small files
-                echo       file $file
-                for ((i=0; i<2; i++)); do # iterations
+    # input_stream = 2
+    echo "---- 2 ----"
+    for out_stream in {1,2,3,4}; do
+        echo out_stream $out_stream
+        if [ "$out_stream" -lt 3 ]
+        then
+            for file in {input/company_type.csv,input/comp_cast_type.csv}; do # large and small files
+                echo "   "file $file
+                for ((i=0; i<2; i++)); do
                     # k=2 files
                     purge
-                    time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 $b $file $file 1>/dev/null) 2>&1`
-                    echo 2,$out_stream"_"$b,$file,2,$time_result >> f_exp3
-                    echo         k 2
+                    time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 0 $file $file 1>/dev/null) 2>&1`
+                    echo 2,$out_stream,$file,2,$time_result >> $f_exp3
+                    echo "      "k 2
 
                     # k=5 files
                     purge
-                    time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 $b $file $file $file $file $file 1>/dev/null) 2>&1`
-                    echo 2,$out_stream"_"$b,$file,5,$time_result >> f_exp3
-                    echo         k 5
+                    time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 0 $file $file $file $file $file 1>/dev/null) 2>&1`
+                    echo 2,$out_stream,$file,5,$time_result >> $f_exp3
+                    echo "      "k 5
 
                     # k=10 files
                     purge
-                    time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 $b $file $file $file $file $file $file $file $file $file $file 1>/dev/null) 2>&1`
-                    echo 2,$out_stream"_"$b,$file,10,$time_result >> f_exp3
-                    echo         k 10
+                    time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 0 $file $file $file $file $file $file $file $file $file $file 1>/dev/null) 2>&1`
+                    echo 2,$out_stream,$file,10,$time_result >> $f_exp3
+                    echo "      "k 10
                 done
             done
-        done
-    fi
-done
-java -cp bin Experiment3 output/output.txt 1 1 0 0 input/comp_cast_type.csv input/kind_type.csv
+        else
+            for b in {10,10000,100000}; do
+                echo "   "b $b
+                for file in {input/company_type.csv,input/comp_cast_type.csv}; do # large and small files
+                    echo "      "file $file
+                    for ((i=0; i<2; i++)); do # iterations
+                        # k=2 files
+                        purge
+                        time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 $b $file $file 1>/dev/null) 2>&1`
+                        echo 2,$out_stream"_"$b,$file,2,$time_result >> $f_exp3
+                        echo "         "k 2
+
+                        # k=5 files
+                        purge
+                        time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 $b $file $file $file $file $file 1>/dev/null) 2>&1`
+                        echo 2,$out_stream"_"$b,$file,5,$time_result >> $f_exp3
+                        echo "         "k 5
+
+                        # k=10 files
+                        purge
+                        time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 2 $out_stream 0 $b $file $file $file $file $file $file $file $file $file $file 1>/dev/null) 2>&1`
+                        echo 2,$out_stream"_"$b,$file,10,$time_result >> $f_exp3
+                        echo "         "k 10
+                    done
+                done
+            done
+        fi
+    done
+
+    # input_stream = 4_1k
+    echo "---- 4_1k ----"
+    for out_stream in {1,2,3,4}; do
+        echo out_stream $out_stream
+        if [ "$out_stream" -lt 3 ]
+        then
+            for file in {input/company_type.csv,input/comp_cast_type.csv}; do # large and small files
+                echo "   "file $file
+                for ((i=0; i<2; i++)); do
+                    # k=2 files
+                    purge
+                    time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 4 $out_stream 1000 0 $file $file 1>/dev/null) 2>&1`
+                    echo "4_1k",$out_stream,$file,2,$time_result >> $f_exp3
+                    echo "      "k 2
+
+                    # k=5 files
+                    purge
+                    time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 4 $out_stream 1000 0 $file $file $file $file $file 1>/dev/null) 2>&1`
+                    echo "4_1k",$out_stream,$file,5,$time_result >> $f_exp3
+                    echo "      "k 5
+
+                    # k=10 files
+                    purge
+                    time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 4 $out_stream 1000 0 $file $file $file $file $file $file $file $file $file $file 1>/dev/null) 2>&1`
+                    echo "4_1k",$out_stream,$file,10,$time_result >> $f_exp3
+                    echo "      "k 10
+                done
+            done
+        else
+            for b in {10,10000,100000}; do
+                echo "   "b $b
+                for file in {input/company_type.csv,input/comp_cast_type.csv}; do # large and small files
+                    echo "      "file $file
+                    for ((i=0; i<2; i++)); do # iterations
+                        # k=2 files
+                        purge
+                        time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 4 $out_stream 1000 $b $file $file 1>/dev/null) 2>&1`
+                        echo "4_1k",$out_stream"_"$b,$file,2,$time_result >> $f_exp3
+                        echo "         "k 2
+
+                        # k=5 files
+                        purge
+                        time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 4 $out_stream 1000 $b $file $file $file $file $file 1>/dev/null) 2>&1`
+                        echo "4_1k",$out_stream"_"$b,$file,5,$time_result >> $f_exp3
+                        echo "         "k 5
+
+                        # k=10 files
+                        purge
+                        time_result=`(/usr/bin/time -f '%E' java -Xms1g -Xmx15g -cp bin Experiment3 $output 4 $out_stream 1000 $b $file $file $file $file $file $file $file $file $file $file 1>/dev/null) 2>&1`
+                        echo "4_1k",$out_stream"_"$b,$file,10,$time_result >> $f_exp3
+                        echo "         "k 10
+                    done
+                done
+            done
+        fi
+    done
+}

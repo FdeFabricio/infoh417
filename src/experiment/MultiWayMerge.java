@@ -1,9 +1,6 @@
 package experiment;
 
-import io.InputStream;
-import io.InputStream2;
-import io.OutputStream;
-import io.OutputStream2;
+import io.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,8 +19,8 @@ public class MultiWayMerge {
 
     private void sort(String filePath, int k, int M) throws IOException {
         Queue<String> sortbuf = new PriorityQueue<>((e1, e2) -> { // priority queue bases on the k-th column
-            String item1[] = e1.split(",");
-            String item2[] = e2.split(",");
+            String[] item1 = e1.split(",");
+            String[] item2 = e2.split(",");
             String k1, k2;
             try {
                 k1 = item1[k - 1].trim();
@@ -35,7 +32,7 @@ public class MultiWayMerge {
         });
 
         InputStream inputStream = new InputStream2();
-        OutputStream outputStream = new OutputStream2();
+        OutputStream outputStream = new OutputStream4(1000);
         inputStream.open(filePath);
         String line;  // save current read line
         int memoryLeft = M;
@@ -81,7 +78,7 @@ public class MultiWayMerge {
 
         while (this.subfilesQueue.size() > 1) {
             inputStreams = new ArrayList<>();
-            OutputStream output = new OutputStream2();
+            OutputStream output = new OutputStream4(1000);
             String outputFileName = OUTPUT_FOLDER + "m" + subfilesCount + ".txt";
             output.create(outputFileName);
 
